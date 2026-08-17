@@ -11,6 +11,8 @@ Table Used:
     - INFORMATION_SCHEMA.COLUMNS
 ===============================================================================
 */
+-- Explore all objects in the DataWarehouseAnalytics
+select * from information_schema.tables
 
 -- Retrieve a list of all tables in the database
 SELECT 
@@ -28,3 +30,14 @@ SELECT
     CHARACTER_MAXIMUM_LENGTH
 FROM INFORMATION_SCHEMA.COLUMNS
 WHERE TABLE_NAME = 'dim_customers';
+
+
+-- Explore all columns in the DataWarehouseAnalytics
+select * from information_schema.columns
+
+select * from information_schema.columns
+where table_name = 'dim_customers'
+select * from information_schema.columns
+where table_name = 'dim_products'
+select * from information_schema.columns
+where table_name = 'fact_sales'
