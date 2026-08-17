@@ -12,36 +12,66 @@ SQL Functions Used:
 */
 
 -- Find the Total Sales
-SELECT SUM(sales_amount) AS total_sales FROM gold.fact_sales
+select sum(sales_amount) as total_sales from gold.fact_sales;
 
 -- Find how many items are sold
-SELECT SUM(quantity) AS total_quantity FROM gold.fact_sales
+select sum(quantity) as total_quantity from gold.fact_sales;
 
 -- Find the average selling price
-SELECT AVG(price) AS avg_price FROM gold.fact_sales
+select avg(price) as avg_price from gold.fact_sales;
 
 -- Find the Total number of Orders
-SELECT COUNT(order_number) AS total_orders FROM gold.fact_sales
-SELECT COUNT(DISTINCT order_number) AS total_orders FROM gold.fact_sales
+select count(order_number) as total_orders from gold.fact_sales;
+select count(distinct order_number) as total_orders from gold.fact_sales;
+select * from gold.fact_sales
 
 -- Find the total number of products
-SELECT COUNT(product_name) AS total_products FROM gold.dim_products
+select count(product_key) as total_products from gold.dim_products;
+select count(distinct product_key) as total_orders from gold.dim_products;
 
 -- Find the total number of customers
-SELECT COUNT(customer_key) AS total_customers FROM gold.dim_customers;
+select count(customer_key) as total_customers from gold.dim_customers;
 
 -- Find the total number of customers that has placed an order
-SELECT COUNT(DISTINCT customer_key) AS total_customers FROM gold.fact_sales;
+select count(distinct customer_key) as total_customers from gold.fact_sales;
 
 -- Generate a Report that shows all key metrics of the business
-SELECT 'Total Sales' AS measure_name, SUM(sales_amount) AS measure_value FROM gold.fact_sales
+SELECT 
+    'Total Sales' AS measure_name, 
+    SUM(sales_amount) AS measure_value 
+FROM gold.fact_sales
+
 UNION ALL
-SELECT 'Total Quantity', SUM(quantity) FROM gold.fact_sales
+
+SELECT 
+    'Total Quantity', 
+    SUM(quantity) 
+FROM gold.fact_sales
+
 UNION ALL
-SELECT 'Average Price', AVG(price) FROM gold.fact_sales
+
+SELECT 
+    'Average Price', 
+    AVG(price) 
+FROM gold.fact_sales
+
 UNION ALL
-SELECT 'Total Orders', COUNT(DISTINCT order_number) FROM gold.fact_sales
+
+SELECT 
+    'Total Nr. Orders', 
+    COUNT(DISTINCT order_number) 
+FROM gold.fact_sales
+
 UNION ALL
-SELECT 'Total Products', COUNT(DISTINCT product_name) FROM gold.dim_products
+
+SELECT 
+    'Total Nr. Products', 
+    COUNT(product_name) 
+FROM gold.dim_products
+
 UNION ALL
-SELECT 'Total Customers', COUNT(customer_key) FROM gold.dim_customers;
+
+SELECT 
+    'Total Nr. Customers', 
+    COUNT(customer_key) 
+FROM gold.dim_customers;
