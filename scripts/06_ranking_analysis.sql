@@ -14,65 +14,70 @@ SQL Functions Used:
 
 -- Which 5 products Generating the Highest Revenue?
 -- Simple Ranking
-SELECT TOP 5
-    p.product_name,
-    SUM(f.sales_amount) AS total_revenue
-FROM gold.fact_sales f
-LEFT JOIN gold.dim_products p
-    ON p.product_key = f.product_key
-GROUP BY p.product_name
-ORDER BY total_revenue DESC;
+select
+	p.product_name,
+	sum(f.sales_amount) as total_revenue
+from gold.fact_sales f
+left join gold.dim_products p
+on p.product_key  = f.product_key 
+group by p.product_name 
+order by sum(f.sales_amount) desc 
+limit 5
 
 -- Complex but Flexibly Ranking Using Window Functions
-SELECT *
-FROM (
-    SELECT
-        p.product_name,
-        SUM(f.sales_amount) AS total_revenue,
-        RANK() OVER (ORDER BY SUM(f.sales_amount) DESC) AS rank_products
-    FROM gold.fact_sales f
-    LEFT JOIN gold.dim_products p
-        ON p.product_key = f.product_key
-    GROUP BY p.product_name
-) AS ranked_products
-WHERE rank_products <= 5;
+select 
+*
+from (
+select
+	p.product_name,
+	sum(f.sales_amount) as total_revenue,
+	row_number() over (order by sum(f.sales_amount) desc) as rank_products
+from gold.fact_sales f
+left join gold.dim_products p
+on p.product_key  = f.product_key 
+group by p.product_name 
+)t where rank_products <= 5
 
 -- What are the 5 worst-performing products in terms of sales?
-SELECT TOP 5
-    p.product_name,
-    SUM(f.sales_amount) AS total_revenue
-FROM gold.fact_sales f
-LEFT JOIN gold.dim_products p
-    ON p.product_key = f.product_key
-GROUP BY p.product_name
-ORDER BY total_revenue;
+select
+	p.product_name,
+	sum(f.sales_amount) as total_revenue
+from gold.fact_sales f
+left join gold.dim_products p
+on p.product_key  = f.product_key 
+group by p.product_name 
+order by sum(f.sales_amount) 
+limit 5
 
 -- Find the top 10 customers who have generated the highest revenue
-SELECT TOP 10
-    c.customer_key,
-    c.first_name,
-    c.last_name,
-    SUM(f.sales_amount) AS total_revenue
-FROM gold.fact_sales f
-LEFT JOIN gold.dim_customers c
-    ON c.customer_key = f.customer_key
-GROUP BY 
-    c.customer_key,
-    c.first_name,
-    c.last_name
-ORDER BY total_revenue DESC;
+select 
+	f.customer_key,
+	c.first_name,
+	c.last_name,
+	sum(f.sales_amount) as total_revenue
+from gold.fact_sales f
+left join gold.dim_customers c
+on f.customer_key = c.customer_key 
+group by 
+	f.customer_key,
+	c.first_name,
+	c.last_name
+order by sum(f.sales_amount) desc
+limit 10
 
 -- The 3 customers with the fewest orders placed
-SELECT TOP 3
-    c.customer_key,
-    c.first_name,
-    c.last_name,
-    COUNT(DISTINCT order_number) AS total_orders
-FROM gold.fact_sales f
-LEFT JOIN gold.dim_customers c
-    ON c.customer_key = f.customer_key
-GROUP BY 
-    c.customer_key,
-    c.first_name,
-    c.last_name
-ORDER BY total_orders ;
+select 
+	f.customer_key,
+	c.first_name,
+	c.last_name,
+	count(distinct f.order_number) as total_orders
+from gold.fact_sales f
+left join gold.dim_customers c
+on f.customer_key = c.customer_key 
+group by 
+	f.customer_key,
+	c.first_name,
+	c.last_name
+order by count(distinct f.order_number)
+limit 3
+
