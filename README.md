@@ -53,7 +53,3 @@ Tools
 * PostgreSQL 18
 * DBeaver
 * Git & GitHub
-
-Author
-
-Martyna Wieruszewska
