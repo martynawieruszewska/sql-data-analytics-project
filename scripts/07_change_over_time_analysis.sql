@@ -12,6 +12,7 @@ SQL Functions Used:
     - Aggregate Functions: SUM(), COUNT(), AVG()
 ===============================================================================
 */
+
 -- Analyse sales performance over time
 select
 	extract(year from order_date) as order_year,
@@ -27,7 +28,8 @@ group by
 order by 
 	extract(year from order_date),
 	extract(month from order_date)
-
+	
+-- Extras
 -- DATE_TRUNC()
 SELECT
     DATE_TRUNC('month', order_date) AS order_date,
@@ -38,7 +40,6 @@ FROM gold.fact_sales
 WHERE order_date IS NOT NULL
 GROUP BY DATE_TRUNC('month', order_date)
 ORDER BY DATE_TRUNC('month', order_date);
-
 
 -- TO_CHAR()
 SELECT
