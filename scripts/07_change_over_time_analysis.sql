@@ -12,24 +12,21 @@ SQL Functions Used:
     - Aggregate Functions: SUM(), COUNT(), AVG()
 ===============================================================================
 */
-
 -- Analyse sales performance over time
--- Quick Date Functions
-SELECT
-    EXTRACT(YEAR FROM order_date) AS order_year,
-    EXTRACT(MONTH FROM order_date) AS order_month,
-    SUM(sales_amount) AS total_sales,
-    COUNT(DISTINCT customer_key) AS total_customers,
-    SUM(quantity) AS total_quantity
-FROM gold.fact_sales
-WHERE order_date IS NOT NULL
-GROUP BY
-    EXTRACT(YEAR FROM order_date),
-    EXTRACT(MONTH FROM order_date)
-ORDER BY
-    EXTRACT(YEAR FROM order_date),
-    EXTRACT(MONTH FROM order_date);
-
+select
+	extract(year from order_date) as order_year,
+	extract(month from order_date) as order_month,
+	sum(sales_amount) as total_sales,
+	count(distinct customer_key) as total_customer,
+	sum(quantity) as total_quantity
+from gold.fact_sales 
+where order_date is not null
+group by 
+	extract(year from order_date),
+	extract(month from order_date)
+order by 
+	extract(year from order_date),
+	extract(month from order_date)
 
 -- DATE_TRUNC()
 SELECT
