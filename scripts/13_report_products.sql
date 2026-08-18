@@ -96,39 +96,26 @@ select
     	when total_sales > 50000 then 'High-Performer'
     	when total_sales >= 10000 then 'Mid-Range'
     	else 'Low-Performer'
-    end as product_segment
-    
-
-
-
-/*---------------------------------------------------------------------------
-3) Final Query: Combines all product results into one output
----------------------------------------------------------------------------*/
-
-
-    CASE
-        WHEN total_sales > 50000 THEN 'High-Performer'
-        WHEN total_sales >= 10000 THEN 'Mid-Range'
-        ELSE 'Low-Performer'
-    END AS product_segment,
-
+    end as product_segment,
     lifespan,
     total_orders,
     total_sales,
     total_quantity,
     total_customers,
     avg_selling_price,
+    -- Average Order Revenue
+    case 
+    	when total_orders = 0 then 0
+    	else round(total_sales::numeric / total_orders, 2)
+    end as avg_order_revenue,
+    case 
+    	when lifespan = 0 then total_sales
+    	else round(total_sales::numeric / lifespan, 2)
+    end as avg_monthly_revenue
+from products_agregations
+    
+    
+    
+    
+    
 
-    -- Average Order Revenue (AOR)
-    CASE
-        WHEN total_orders = 0 THEN 0
-        ELSE ROUND(total_sales::NUMERIC / total_orders, 2)
-    END AS avg_order_revenue,
-
-    -- Average Monthly Revenue
-    CASE
-        WHEN lifespan = 0 THEN total_sales
-        ELSE ROUND(total_sales::NUMERIC / lifespan, 2)
-    END AS avg_monthly_revenue
-
-FROM product_aggregations;
