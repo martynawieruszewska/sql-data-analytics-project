@@ -64,66 +64,47 @@ select
 	category,
 	subcategory,
 	cost,
-	extract
-	
-
-/*---------------------------------------------------------------------------
-3) Final Query: Combines all product results into one output
----------------------------------------------------------------------------*/
-
-
-
-
-/*---------------------------------------------------------------------------
-2) Product Aggregations: Summarizes key metrics at the product level
----------------------------------------------------------------------------*/
-
-    SELECT
-        product_key,
-        product_name,
-        category,
-        subcategory,
-        cost,
-
-        EXTRACT(YEAR FROM AGE(MAX(order_date), MIN(order_date))) * 12
-        + EXTRACT(MONTH FROM AGE(MAX(order_date), MIN(order_date))) AS lifespan,
-
-        MAX(order_date) AS last_sale_date,
-
-        COUNT(DISTINCT order_number) AS total_orders,
-        COUNT(DISTINCT customer_key) AS total_customers,
-        SUM(sales_amount) AS total_sales,
-        SUM(quantity) AS total_quantity,
-
-        ROUND(
-            AVG(sales_amount::NUMERIC / NULLIF(quantity, 0)),
-            1
-        ) AS avg_selling_price
-
-    FROM base_query
-
-    GROUP BY
-        product_key,
-        product_name,
-        category,
-        subcategory,
-        cost
+	extract(year from age(max(order_date), min(order_date))) * 12 + extract(month from age(max(order_date), min(order_date))) as lifespan,
+	max(order_date) as last_order_date,
+	count(distinct order_number) as total_orders,
+	count(distinct customer_key) as total_customers,
+	sum(sales_amount) as total_sales,
+	sum(quantity) as total_quantity,
+	round(avg(sales_amount::numeric / nullif(quantity, 0)), 1) as avg_selling_price
+from base_query
+group by 
+	product_key,
+	product_name,
+	category,
+	subcategory,
+	cost
 )
 
 /*---------------------------------------------------------------------------
 3) Final Query: Combines all product results into one output
 ---------------------------------------------------------------------------*/
 
-SELECT
-    product_key,
+select 
+	product_key,
     product_name,
     category,
     subcategory,
     cost,
     last_sale_date,
+    extract(year from age(current_date, last_sale_date)) * 12 + extract(month from age(current_date, last_dale_date)) as recency_in_months,
+    case
+    	when total_sales > 50000 then 'High-Performer'
+    	when total_sales >= 10000 then 'Mid-Range'
+    	else 'Low-Performer'
+    end as product_segment
+    
 
-    EXTRACT(YEAR FROM AGE(CURRENT_DATE, last_sale_date)) * 12
-    + EXTRACT(MONTH FROM AGE(CURRENT_DATE, last_sale_date)) AS recency_in_months,
+
+
+/*---------------------------------------------------------------------------
+3) Final Query: Combines all product results into one output
+---------------------------------------------------------------------------*/
+
 
     CASE
         WHEN total_sales > 50000 THEN 'High-Performer'
