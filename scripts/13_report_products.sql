@@ -90,8 +90,8 @@ select
     category,
     subcategory,
     cost,
-    last_sale_date,
-    extract(year from age(current_date, last_sale_date)) * 12 + extract(month from age(current_date, last_dale_date)) as recency_in_months,
+    last_order_date,
+    extract(year from age(current_date, last_order_date)) * 12 + extract(month from age(current_date, last_order_date)) as recency_in_months,
     case
     	when total_sales > 50000 then 'High-Performer'
     	when total_sales >= 10000 then 'Mid-Range'
@@ -108,11 +108,12 @@ select
     	when total_orders = 0 then 0
     	else round(total_sales::numeric / total_orders, 2)
     end as avg_order_revenue,
+    -- Average Monthly Revenue
     case 
     	when lifespan = 0 then total_sales
     	else round(total_sales::numeric / lifespan, 2)
     end as avg_monthly_revenue
-from products_agregations
+from product_aggregations
     
     
     
