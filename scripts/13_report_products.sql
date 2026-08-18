@@ -25,35 +25,54 @@ Highlights:
 -- Create Report: gold.report_products
 -- =============================================================================
 
-DROP VIEW IF EXISTS gold.report_products;
+drop view if exists gold.report_products;
 
-CREATE VIEW gold.report_products AS
+create view gold.report_products as
 
-WITH base_query AS (
+with base_query as (
 
 /*---------------------------------------------------------------------------
 1) Base Query: Retrieves core columns from fact_sales and dim_products
 ---------------------------------------------------------------------------*/
 
-    SELECT
-        f.order_number,
-        f.order_date,
-        f.customer_key,
-        f.sales_amount,
-        f.quantity,
-        p.product_key,
-        p.product_name,
-        p.category,
-        p.subcategory,
-        p.cost
-    FROM gold.fact_sales f
-    LEFT JOIN gold.dim_products p
-        ON f.product_key = p.product_key
-    WHERE f.order_date IS NOT NULL
-
+select 
+	f.order_number,
+    f.order_date,
+    f.customer_key,
+    f.sales_amount,
+    f.quantity,
+    p.product_key,
+    p.product_name,
+    p.category,
+    p.subcategory,
+    p.cost
+from gold.fact_sales f
+left join gold.dim_products p
+on f.product_key = p.product_key 
+where f.order_date is not null
 ),
 
-product_aggregations AS (
+product_aggregations as (
+
+/*---------------------------------------------------------------------------
+2) Product Aggregations: Summarizes key metrics at the product level
+---------------------------------------------------------------------------*/
+
+select
+	product_key,
+	product_name,
+	category,
+	subcategory,
+	cost,
+	extract
+	
+
+/*---------------------------------------------------------------------------
+3) Final Query: Combines all product results into one output
+---------------------------------------------------------------------------*/
+
+
+
 
 /*---------------------------------------------------------------------------
 2) Product Aggregations: Summarizes key metrics at the product level
