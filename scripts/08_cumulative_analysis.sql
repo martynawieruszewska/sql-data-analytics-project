@@ -13,20 +13,20 @@ SQL Functions Used:
 */
 
 -- Calculate the total sales per year
--- and the running total of sales over time
-
-SELECT
-    order_date,
-    total_sales,
-    SUM(total_sales) OVER (ORDER BY order_date) AS running_total_sales,
-    AVG(avg_price) OVER (ORDER BY order_date) AS moving_average_price
-FROM
-(
-    SELECT
-        DATE_TRUNC('month', order_date) AS order_date,
-        SUM(sales_amount) AS total_sales,
-        AVG(price) AS avg_price
-    FROM gold.fact_sales
-    WHERE order_date IS NOT NULL
-    GROUP BY DATE_TRUNC('month', order_date)
-) t;
+-- and the running total of sales and average price over time
+select 
+*,
+sum(total_sales) over (order by order_year) as running_total_sales,
+round(avg(avg_price) over (order by order_year), 2) as running_avg_price
+from(
+select 
+	extract(year from order_date) as order_year,
+	sum(sales_amount) as total_sales,
+	round(avg(price), 2) as avg_price
+from gold.fact_sales
+where order_date is not null
+group by 
+	extract(year from order_date)
+order by 
+	extract(year from order_date)
+)t
