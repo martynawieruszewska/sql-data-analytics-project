@@ -60,7 +60,7 @@ select
 	lifespan,
 case 
 	when lifespan >= 12 and total_spending > 5000 then 'VIP'
-	when lifespan > 12 and total_spending <= 5000 then 'Regular'
+	when lifespan >= 12 and total_spending <= 5000 then 'Regular'
 	else 'New'
 end as customer_segment
 from customer_spending
