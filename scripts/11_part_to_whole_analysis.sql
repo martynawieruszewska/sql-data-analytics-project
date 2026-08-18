@@ -13,25 +13,21 @@ SQL Functions Used:
 ===============================================================================
 */
 
--- Which categories contribute the most to overall sales?
+-- Which categories contribute the most to overall sales
 
-WITH category_sales AS (
-    SELECT
-        p.category,
-        SUM(f.sales_amount) AS total_sales
-    FROM gold.fact_sales f
-    LEFT JOIN gold.dim_products p
-        ON p.product_key = f.product_key
-    GROUP BY p.category
+with category_sales as (
+select 
+	category,
+	sum(sales_amount) as total_sales
+from gold.fact_sales f
+left join gold.dim_products p
+on f.product_key = p.product_key
+group by category
 )
-
-SELECT
-    category,
-    total_sales,
-    SUM(total_sales) OVER () AS overall_sales,
-    ROUND(
-        total_sales::NUMERIC / SUM(total_sales) OVER () * 100,
-        2
-    ) AS percentage_of_total
-FROM category_sales
-ORDER BY total_sales DESC;
+select 
+	category,
+	total_sales,
+	sum(total_sales) over() as overall_sales,
+	concat(round((total_sales::numeric / sum(total_sales) over()) * 100, 2), '%') as percantage_of_total
+from category_sales 
+order by total_sales desc
